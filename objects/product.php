@@ -170,7 +170,7 @@ class Product {
         return false;
     }
     // метод search - поиск товаров
-    function search($keywords){
+    function search($keywords, $from_record_num, $records_per_page){
 
         // выборка по всем записям
         $query = "SELECT
@@ -183,7 +183,8 @@ class Product {
             WHERE
                 p.name LIKE ? OR p.description LIKE ? OR c.name LIKE ?
             ORDER BY
-                p.created DESC";
+                p.created DESC
+                LIMIT ?, ?";
 
         // подготовка запроса
         $stmt = $this->conn->prepare($query);
@@ -196,6 +197,8 @@ class Product {
         $stmt->bindParam(1, $keywords);
         $stmt->bindParam(2, $keywords);
         $stmt->bindParam(3, $keywords);
+        $stmt->bindParam(4, $from_record_num, PDO::PARAM_INT);
+        $stmt->bindParam(5, $records_per_page, PDO::PARAM_INT);
 
         // выполняем запрос
         $stmt->execute();
@@ -232,6 +235,15 @@ class Product {
     public function count(){
         $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . "";
 
+        $stmt = $this->conn->prepare( $query );
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row['total_rows'];
+    }
+    public function countSearch($keywords){
+        $keywords = "'%{$keywords}%'";
+        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . " WHERE `name` LIKE " . $keywords . " OR `description` LIKE " . $keywords;
         $stmt = $this->conn->prepare( $query );
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

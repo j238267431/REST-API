@@ -53,6 +53,10 @@ if ($num>0) {
     $page_url="{$home_url}product/read_paging.php?";
     $paging=$utilities->getPaging($page, $total_rows, $records_per_page, $page_url);
     $products_arr["paging"]=$paging;
+    $products_arr["keywords"]="";
+    if(!empty($keywords)){
+        $products_arr["keywords"]=$keywords;
+    }
 
     // установим код ответа - 200 OK
     http_response_code(200);
