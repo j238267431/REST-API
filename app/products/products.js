@@ -5,9 +5,7 @@ function readProductsTemplate(data, keywords){
         <!-- форма поиска товаров -->
         <form id='search-product-form' action='#' method='post'>
             <div class='input-group pull-left w-30-pct'>
-
-                <input id="search-form" type='text' value='` + keywords + `' name='keywords' class='form-control product-search-keywords' placeholder='Поиск товаров...' />
-
+                <input id="search-form" type='text' value='` + data.keywords + `' name='keywords' class='form-control product-search-keywords' placeholder='Поиск товаров...' />
                 <span class='input-group-btn'>
                     <button type='submit' class='btn btn-default' type='button'>
                         <span class='glyphicon glyphicon-search'></span>
@@ -77,7 +75,7 @@ function readProductsTemplate(data, keywords){
         // перебор страниц
         $.each(data.paging.pages, function(key, val){
             var active_page=val.current_page=="yes" ? "class='active'" : "";
-            read_products_html+="<li " + active_page + "><a data-page='" + val.url + "'>" + val.page + "</a></li>";
+            read_products_html+="<li " + active_page + "><a data-page='" + val.url + "&s=" + data.keywords + "'>" + val.page + "</a></li>";
         });
 
         // последняя

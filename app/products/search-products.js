@@ -15,7 +15,7 @@ jQuery(function($){
             // изменяем title
             changePageTitle("Поиск товаров: " + keywords);
 
-        });
+        }).fail(function(jqXHR, textStatus, errorThrown) { console.log(textStatus); console.log(errorThrown); })
 
         // предотвращаем перезагрузку всей страницы
         return false;

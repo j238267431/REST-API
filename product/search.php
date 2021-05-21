@@ -7,7 +7,9 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/core.php';
 include_once '../config/database.php';
 include_once '../objects/product.php';
+include_once '../shared/utilities.php';
 
+$utilities = new Utilities();
 // создание подключения к БД
 $database = new Database();
 $db = $database->getConnection();
@@ -19,7 +21,7 @@ $product = new Product($db);
 $keywords=isset($_GET["s"]) ? $_GET["s"] : "";
 
 // запрос товаров
-$stmt = $product->search($keywords);
+$stmt = $product->search($keywords, $from_record_num, $records_per_page);
 $num = $stmt->rowCount();
 
 // проверяем, найдено ли больше 0 записей
@@ -46,6 +48,17 @@ if ($num>0) {
 
         array_push($products_arr["records"], $product_item);
     }
+
+    // подключим пагинацию
+    $total_rows=$product->countSearch($keywords);
+    $page_url="{$home_url}product/search.php?";
+    $paging=$utilities->getPaging($page, $total_rows, $records_per_page, $page_url, $keywords);
+    $products_arr["paging"]=$paging;
+    $products_arr["keywords"]="";
+    if(!empty($keywords)){
+        $products_arr["keywords"]=$keywords;
+    }
+
 
     // код ответа - 200 OK
     http_response_code(200);
